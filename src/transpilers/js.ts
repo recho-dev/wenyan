@@ -74,7 +74,8 @@ export default class JSCompiler extends BaseTranspiler {
           js += `var ${name}=${a.public ? `this.${name}=` : ""}${value};`;
         }
       } else if (a.op == "print") {
-        js += `console.log(${strayvar.join(",")});`;
+        // 示之 hands its values to the host's echo(), e.g. Recho's.
+        js += `${a.show ? "echo" : "console.log"}(${strayvar.join(",")});`;
         strayvar = [];
       } else if (a.op == "fun") {
         js += `${prevfun}=${prevfunpublic ? `this.${prevfun}=` : ""}${

@@ -87,6 +87,11 @@ export interface ASCNodeWithValue {
     op: "not" | "whilen" | "comment";
     value: Token;
 }
+/** 書之 prints; 示之 (`show`) shows its values for the host to display. */
+export interface ASCNodePrint {
+    op: "print";
+    show?: boolean;
+}
 export interface ASCNodeName {
     op: "name";
     names: string[];
@@ -168,9 +173,9 @@ export interface ASCNodeEOF {
     op: "EOF";
 }
 export interface ASCNodeSimple {
-    op: "break" | "end" | "print" | "else" | "continue" | "objbody" | "funbody" | "whiletrue" | "try" | "tryend" | "catch" | "discard" | "funend" | "objend";
+    op: "break" | "end" | "else" | "continue" | "objbody" | "funbody" | "whiletrue" | "try" | "tryend" | "catch" | "discard" | "funend" | "objend";
 }
-export declare type ASCNode = ASCNodeCommon & (ASCNodeOperator | ASCNodeSimple | ASCNodeReturn | ASCNodeIf | ASCNodeFunction | ASCNodeWithValue | ASCNodeName | ASCNodeReassign | ASCNodeImport | ASCNodeTake | ASCNodeWithError | ASCNodeTemp | ASCNodeCat | ASCNodeFor | ASCNodeLength | ASCNodePush | ASCNodeCall | ASCNodeSubscript | ASCNodeVariable | ASCNodePropertry | ASCNodeGlobal | ASCNodeEOF);
+export declare type ASCNode = ASCNodeCommon & (ASCNodeOperator | ASCNodeSimple | ASCNodeReturn | ASCNodeIf | ASCNodeFunction | ASCNodeWithValue | ASCNodePrint | ASCNodeName | ASCNodeReassign | ASCNodeImport | ASCNodeTake | ASCNodeWithError | ASCNodeTemp | ASCNodeCat | ASCNodeFor | ASCNodeLength | ASCNodePush | ASCNodeCall | ASCNodeSubscript | ASCNodeVariable | ASCNodePropertry | ASCNodeGlobal | ASCNodeEOF);
 export declare function isASCNodeOperator(node: ASCNode): node is ASCNodeCommon & ASCNodeOperator;
 export interface IdenType {
     type: "any" | "nil" | "fun" | "obj" | "arr" | "str" | "bol" | "num" | string;

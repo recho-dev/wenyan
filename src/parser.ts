@@ -310,7 +310,8 @@ function tokens2asc(tokens: Token[], assert = defaultAssert()) {
       i += 6;
       asc.push(x);
     } else if (gettok(i, 0) == "print") {
-      asc.push({ op: "print", pos });
+      if (gettok(i, 1) == "show") asc.push({ op: "print", show: true, pos });
+      else asc.push({ op: "print", pos });
       i++;
     } else if (gettok(i, 0) == "ctrl" && gettok(i, 1) == "funstart") {
       var x: ASCNode = { op: "fun", arity: 0, args: [], pos };

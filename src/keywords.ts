@@ -20,6 +20,7 @@ export const KEYWORDS_DEFINE: Record<
   物: ["type", "obj"],
   元: ["type", "any"],
   書之: ["print", undefined],
+  示之: ["print", "show"],
   名之曰: ["name", undefined],
   施: ["call", "r"],
   以施: ["call", "l"],

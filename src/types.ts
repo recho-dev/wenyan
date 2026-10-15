@@ -129,6 +129,12 @@ export interface ASCNodeWithValue {
   value: Token;
 }
 
+/** 書之 prints; 示之 (`show`) shows its values for the host to display. */
+export interface ASCNodePrint {
+  op: "print";
+  show?: boolean;
+}
+
 export interface ASCNodeName {
   op: "name";
   names: string[];
@@ -229,7 +235,6 @@ export interface ASCNodeSimple {
   op:
     | "break"
     | "end"
-    | "print"
     | "else"
     | "continue"
     | "objbody"
@@ -251,6 +256,7 @@ export type ASCNode = ASCNodeCommon &
     | ASCNodeIf
     | ASCNodeFunction
     | ASCNodeWithValue
+    | ASCNodePrint
     | ASCNodeName
     | ASCNodeReassign
     | ASCNodeImport
