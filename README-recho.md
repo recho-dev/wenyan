@@ -12,4 +12,6 @@ This fork adds what [Recho](https://github.com/recho-dev/recho) needs to run wen
 
   Rebuild and commit `dist/recho/` after changing `src/`.
 
+The upstream `publish` script (bump the version and publish to npm) is renamed to `publish:npm`. pnpm runs a package's `publish` script when it installs the package from git, so leaving it in place would try to publish whenever Recho installs this fork.
+
 The `splitCells` change is meant to be proposed upstream.

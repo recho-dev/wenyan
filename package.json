@@ -28,7 +28,7 @@
     "dev": "npm run clear && npm run build:type && webpack --mode development --watch",
     "cli": "ts-node ./src/cli.ts",
     "clear": "rimraf dist typings",
-    "publish": "bump --commit && node ./tools/publish.js",
+    "publish:npm": "bump --commit && node ./tools/publish.js",
     "publish:ci": "node ./tools/publish.js",
     "update:wiki": "node ./tools/wiki/update.js --push",
     "release": "bump --commit --tag && git push --follow-tags",
