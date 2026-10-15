@@ -1,0 +1,31 @@
+declare const BOOK_COLORS: {
+    ctrl: string;
+    lop: string;
+    name: string;
+    cmp: string;
+    decl: string;
+    print: string;
+    rassgn: string;
+    ctnr: string;
+    comment: string;
+    type: string;
+    call: string;
+    assgn: string;
+    discard: string;
+    endl: string;
+    ans: string;
+    expr: string;
+    op: string;
+    not: string;
+    operand: string;
+    bool: string;
+    data: string;
+    iden: string;
+    quot: string;
+    num: string;
+};
+declare function render(fname: any, txt: any, { plotResult }?: {
+    plotResult?: boolean;
+}): any[];
+declare function unrender(svgs: any): string;
+export { render, unrender, BOOK_COLORS };

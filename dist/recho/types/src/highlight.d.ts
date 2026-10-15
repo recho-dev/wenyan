@@ -1,0 +1,31 @@
+export function semantic(txt: any): string[];
+export function highlight(codes: any): void;
+export function newLineNo(ed: any): HTMLPreElement;
+export namespace DEFAULT_COLORS {
+    const ctrl: string;
+    const lop: string;
+    const name: string;
+    const cmp: string;
+    const decl: string;
+    const print: string;
+    const rassgn: string;
+    const ctnr: string;
+    const comment: string;
+    const type: string;
+    const call: string;
+    const assgn: string;
+    const discard: string;
+    const endl: string;
+    const ans: string;
+    const expr: string;
+    const op: string;
+    const not: string;
+    const operand: string;
+    const bool: string;
+    const data: string;
+    const iden: string;
+    const quot: string;
+    const num: string;
+}
+export function newEditor(txt: any): HTMLPreElement;
+export function setTheme(theme: any): void;

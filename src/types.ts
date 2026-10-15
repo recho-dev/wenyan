@@ -33,8 +33,17 @@ export interface MarcoOptions {
   importOptions: ImportOptions;
 }
 
+export interface TranspilerState {
+  /** How many blocks (functions, loops, conditionals, ...) are open. */
+  depth: number;
+  /** How many values are pending, waiting for 名之曰, 書之, 噫, ... */
+  pending: number;
+}
+
 export interface TranspilerOptions {
   imports: string[];
+  /** Called after each operation of the AST with the transpiler's state. */
+  onOp: (index: number, state: TranspilerState) => void;
 }
 
 export interface ExecuteOptions {

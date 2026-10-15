@@ -4,7 +4,8 @@ import {
   Token,
   TokenType,
   RomanizeSystem,
-  ExecuteOptions
+  ExecuteOptions,
+  TranspilerState
 } from "./types";
 import {
   hanzi2num,
@@ -667,6 +668,73 @@ function tokens2asc(tokens: Token[], assert = defaultAssert()) {
   return asc;
 }
 
+/**
+ * Split a program into cells: runs of whole lines that can be compiled and
+ * run on their own, for notebook-style evaluation.
+ *
+ * A cell ends after a line where no block is open and no value is pending, as
+ * the JS transpiler sees it: `夫「甲」。` and `書之。` stay in one cell even
+ * on separate lines, because 書之 prints the value 夫 left pending. A value
+ * nothing consumes keeps the cell open until a blank line.
+ *
+ * Macros are not expanded, so programs that define them are not supported.
+ */
+function splitCells(
+  txt: string,
+  assert = defaultAssert()
+): { from: number; to: number }[] {
+  const asc = tokens2asc(wy2tokens(txt, assert), assert);
+  const states: TranspilerState[] = [];
+  new transpilers.js(asc).transpile({
+    onOp: (index, state) => (states[index] = state)
+  });
+
+  const lineStarts = [0];
+  for (let i = 0; i < txt.length; i++) {
+    if (txt[i] == "\n") lineStarts.push(i + 1);
+  }
+  const lineOf = (pos: number) => {
+    let lo = 0;
+    let hi = lineStarts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (lineStarts[mid] <= pos) lo = mid;
+      else hi = mid - 1;
+    }
+    return lo;
+  };
+  const lineEnd = (line: number) =>
+    line + 1 < lineStarts.length ? lineStarts[line + 1] - 1 : txt.length;
+  const isBlank = (line: number) =>
+    txt.slice(lineStarts[line], lineEnd(line)).trim() == "";
+
+  // Operations without a position belong to the line of the one before.
+  const lines: number[] = [];
+  asc.forEach(
+    (a, i) =>
+      (lines[i] = a.pos != null ? lineOf(a.pos) : i > 0 ? lines[i - 1] : 0)
+  );
+
+  const cells: { from: number; to: number }[] = [];
+  let first = 0;
+  for (let i = 0; i < asc.length; i++) {
+    const last = i == asc.length - 1;
+    if (!last) {
+      const { depth, pending } = states[i];
+      if (depth != 0 || lines[i + 1] == lines[i]) continue;
+      if (pending != 0) {
+        let blank = false;
+        for (let l = lines[i] + 1; l < lines[i + 1] && !blank; l++)
+          blank = isBlank(l);
+        if (!blank) continue;
+      }
+    }
+    cells.push({ from: lineStarts[lines[first]], to: lineEnd(lines[i]) });
+    first = i + 1;
+  }
+  return cells;
+}
+
 function compile(txt: string, options: Partial<CompileOptions> = {}): string {
   const {
     lang = "js",
@@ -799,6 +867,7 @@ function execute(
 
 export {
   compile,
+  splitCells,
   evalCompiled,
   execute,
   version,

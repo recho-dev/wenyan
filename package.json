@@ -36,7 +36,8 @@
     "test:update": "jest --updateSnapshot",
     "lint:fix": "npm run lint -- --fix",
     "lint": "eslint {src,tools,test}/**/*.{js,ts}",
-    "prettify": "prettier {src,tools,test}/**/*.{js,ts} --write --quote-props preserve"
+    "prettify": "prettier {src,tools,test}/**/*.{js,ts} --write --quote-props preserve",
+    "build:recho": "esbuild src/parser.ts --bundle --format=esm --platform=neutral --target=es2019 --minify --external:sync-request --outfile=dist/recho/index.mjs && tsc --emitDeclarationOnly --declaration --declarationDir dist/recho/types"
   },
   "husky": {
     "hooks": {
@@ -64,6 +65,7 @@
     "commander": "^4.1.1",
     "consola": "^2.15.3",
     "dts-bundle": "^0.7.3",
+    "esbuild": "^0.25.10",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-babel": "^5.3.1",
@@ -94,5 +96,14 @@
   },
   "dependencies": {
     "sync-request": "^6.1.0"
-  }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/recho/types/src/parser.d.ts",
+      "import": "./dist/recho/index.mjs"
+    }
+  },
+  "files": [
+    "dist/recho"
+  ]
 }

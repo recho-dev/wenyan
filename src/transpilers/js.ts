@@ -36,7 +36,9 @@ export default class JSCompiler extends BaseTranspiler {
       return x[1];
     }
 
-    for (const a of this.asc) {
+    const onOp = options.onOp;
+    for (let index = 0; index < this.asc.length; index++) {
+      const a = this.asc[index];
       if (a.op == "var") {
         for (let j = 0; j < a.count; j++) {
           if (a.values[j] === undefined) {
@@ -302,6 +304,7 @@ export default class JSCompiler extends BaseTranspiler {
         console.log(a.op);
       }
       previsfun = a.op == "fun";
+      if (onOp) onOp(index, { depth: curlvl, pending: strayvar.length });
     }
     return { result: js, imports };
   }

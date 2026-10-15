@@ -4,7 +4,9 @@ build/wenyan-linux
 build/wenyan-macos
 build/wenyan-win.exe
 temp
-dist
+# dist/recho is committed so the repo works as a GitHub dependency (see README-recho.md).
+dist/*
+!dist/recho
 /tools/calendar.html
 藏書樓
 .node-xmlhttprequest-*
