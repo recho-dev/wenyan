@@ -683,6 +683,8 @@ function tokens2asc(tokens: Token[], assert = defaultAssert()) {
  *
  * Macros are not expanded, so programs that define them are not supported.
  */
+const CONTINUATIONS = ["fun", "funbody", "objbody"];
+
 function splitCells(
   txt: string,
   assert = defaultAssert()
@@ -728,6 +730,9 @@ function splitCells(
     if (!last) {
       const { depth, pending } = states[i];
       if (depth != 0 || lines[i + 1] == lines[i]) continue;
+      // A function's parameters or body, or an object's body, continues the
+      // declaration before it, even on a later line.
+      if (CONTINUATIONS.includes(asc[i + 1].op)) continue;
       if (pending != 0) {
         let blank = false;
         for (let l = lines[i] + 1; l < lines[i + 1] && !blank; l++)

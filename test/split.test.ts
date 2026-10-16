@@ -83,6 +83,31 @@ describe("splitCells", () => {
     ]);
   });
 
+  it("keeps declarations with bodies that start on a later line", () => {
+    const fun =
+      "吾有一術。名之曰「說」。\n是術曰。\n乃得一。\n是謂「說」之術也。";
+    const withArgs =
+      "吾有一術。名之曰「倍」。\n欲行是術。必先得一數。曰「元」。\n乃行是術曰。\n乃得「元」。\n是謂「倍」之術也。";
+    const obj =
+      "吾有一物。名之曰「甲」。\n其物如是。\n物之「「乙」」者。數曰三。\n是謂「甲」之物也。";
+    expect(cells(`${fun}\n${withArgs}\n${obj}\n施「說」。書之。`)).toEqual([
+      fun,
+      withArgs,
+      obj,
+      "施「說」。書之。"
+    ]);
+    for (const cell of [fun, withArgs, obj]) {
+      expect(() =>
+        compile(cell, {
+          logCallback: () => {},
+          errorCallback: (e: any) => {
+            throw new Error(String(e));
+          }
+        })
+      ).not.toThrow();
+    }
+  });
+
   it("returns no cells for an empty program", () => {
     expect(splitCells("")).toEqual([]);
     expect(splitCells("\n\n")).toEqual([]);
