@@ -235,6 +235,7 @@ export interface ASCNodeSimple {
   op:
     | "break"
     | "end"
+    | "block"
     | "else"
     | "continue"
     | "objbody"

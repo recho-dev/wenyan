@@ -173,7 +173,7 @@ export interface ASCNodeEOF {
     op: "EOF";
 }
 export interface ASCNodeSimple {
-    op: "break" | "end" | "else" | "continue" | "objbody" | "funbody" | "whiletrue" | "try" | "tryend" | "catch" | "discard" | "funend" | "objend";
+    op: "break" | "end" | "block" | "else" | "continue" | "objbody" | "funbody" | "whiletrue" | "try" | "tryend" | "catch" | "discard" | "funend" | "objend";
 }
 export declare type ASCNode = ASCNodeCommon & (ASCNodeOperator | ASCNodeSimple | ASCNodeReturn | ASCNodeIf | ASCNodeFunction | ASCNodeWithValue | ASCNodePrint | ASCNodeName | ASCNodeReassign | ASCNodeImport | ASCNodeTake | ASCNodeWithError | ASCNodeTemp | ASCNodeCat | ASCNodeFor | ASCNodeLength | ASCNodePush | ASCNodeCall | ASCNodeSubscript | ASCNodeVariable | ASCNodePropertry | ASCNodeGlobal | ASCNodeEOF);
 export declare function isASCNodeOperator(node: ASCNode): node is ASCNodeCommon & ASCNodeOperator;

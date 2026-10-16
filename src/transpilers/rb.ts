@@ -292,6 +292,11 @@ export default class RubyCompiler extends BaseTranspiler {
         rb += "\t".repeat(curlvl);
         rb += "while true do\n";
         curlvl++;
+      } else if (a.op == "block") {
+        // Best effort: a plain block, without its own scope.
+        rb += "\t".repeat(curlvl);
+        rb += "begin\n";
+        curlvl++;
       } else if (a.op == "whilen") {
         rb += "\t".repeat(curlvl);
         let v = this.randVar();

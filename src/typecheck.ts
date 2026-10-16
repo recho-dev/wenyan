@@ -332,7 +332,7 @@ function typecheck(asc: ASCNode[], assert = defaultAssert()) {
         a.type
       );
     } else if (a.op == "end") {
-      scopepop(a, "if", "else", "for", "whiletrue", "whilen");
+      scopepop(a, "if", "else", "for", "whiletrue", "whilen", "block");
     } else if (a.op == "if") {
       if (a.elseif) {
         scopepop(a, "if");
@@ -553,6 +553,8 @@ function typecheck(asc: ASCNode[], assert = defaultAssert()) {
       scope[scope.length - 1][a.iterator] =
         gettype(a.container).element || inittype("any");
     } else if (a.op == "whiletrue") {
+      scopepush(a);
+    } else if (a.op == "block") {
       scopepush(a);
     } else if (a.op == "whilen") {
       scopepush(a);

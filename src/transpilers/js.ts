@@ -23,6 +23,11 @@ export default class JSCompiler extends BaseTranspiler {
     let strayvar = [];
     let took = 0;
     const errcurlvls = [];
+    // 獨行此 blocks, innermost last: the level each opened at, where its code
+    // starts in `js`, and whether 乃得 returns a value from it.
+    const blocks: { level: number; start: number; returns: boolean }[] = [];
+    // The levels functions opened at, innermost last.
+    const funlevels: number[] = [];
 
     function getval(x) {
       if (x === undefined) {
@@ -83,14 +88,17 @@ export default class JSCompiler extends BaseTranspiler {
             ? "()=>"
             : a.args.map(arg => `${arg.name}=>`).join("")
         }{`;
+        funlevels.push(curlvl);
         curlvl++;
       } else if (a.op == "funbody") {
         if (!previsfun) {
           js += `${prevfun}=${prevfunpublic ? `this.${prevfun}=` : ""}()=>{`;
+          funlevels.push(curlvl);
           curlvl++;
         }
       } else if (a.op == "funend") {
         js += "};";
+        funlevels.pop();
         curlvl--;
       } else if (a.op == "objend") {
         js += "};";
@@ -100,9 +108,28 @@ export default class JSCompiler extends BaseTranspiler {
         curlvl++;
       } else if (a.op == "prop") {
         js += `${a.name}:${a.value[1]},`;
+      } else if (a.op == "block") {
+        // 獨行此 runs its code on its own: a function called right away, so
+        // what it names stays inside.
+        blocks.push({ level: curlvl, start: js.length, returns: false });
+        js += "(()=>{";
+        curlvl++;
       } else if (a.op == "end") {
-        js += "};";
         curlvl--;
+        const block = blocks[blocks.length - 1];
+        if (block && block.level == curlvl) {
+          blocks.pop();
+          js += "})();";
+          // With 乃得, the block's value is pending, e.g. for 名之曰.
+          if (block.returns) {
+            const vname = this.nextTmpVar();
+            js =
+              js.slice(0, block.start) + `const ${vname}=` + js.slice(block.start);
+            strayvar.push(vname);
+          }
+        } else {
+          js += "};";
+        }
       } else if (a.op == "if") {
         if (a.elseif) {
           js += "}else ";
@@ -145,6 +172,12 @@ export default class JSCompiler extends BaseTranspiler {
         js += "}else{";
       } else if (a.op == "return") {
         js += `return ${getval(a.value)};`;
+        // 乃得 returns from the innermost block or function.
+        const block = blocks[blocks.length - 1];
+        const funlevel = funlevels[funlevels.length - 1];
+        if (block && (funlevel === undefined || block.level > funlevel)) {
+          block.returns = true;
+        }
       } else if (a.op.startsWith("op")) {
         const _a = a as ASCNodeOperator;
         const lhs = getval(_a.lhs);

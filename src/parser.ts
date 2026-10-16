@@ -377,6 +377,9 @@ function tokens2asc(tokens: Token[], assert = defaultAssert()) {
       }
       i++;
       asc.push(x);
+    } else if (gettok(i, 0) == "ctrl" && gettok(i, 1) == "block") {
+      asc.push({ op: "block", pos });
+      i++;
     } else if (gettok(i, 0) == "ctrl" && gettok(i, 1) == "end") {
       asc.push({ op: "end", pos });
       i++;

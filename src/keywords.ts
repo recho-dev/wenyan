@@ -102,6 +102,7 @@ export const KEYWORDS_DEFINE: Record<
   嗚呼: ["throw", "a"],
   之禍: ["throw", "b"],
   姑妄行此: ["try", "try"],
+  獨行此: ["ctrl", "block"],
   如事不諧: ["try", "catch"],
   豈: ["try", "catcherr0"],
   之禍歟: ["try", "catcherr1"],

@@ -284,6 +284,11 @@ export default class PythonTranspiler extends BaseTranspiler {
         py += "\t".repeat(curlvl);
         py += "while (True):\n";
         curlvl++;
+      } else if (a.op == "block") {
+        // Best effort: a plain indented block, without its own scope.
+        py += "\t".repeat(curlvl);
+        py += "if True:\n";
+        curlvl++;
       } else if (a.op == "whilen") {
         py += "\t".repeat(curlvl);
         let v = this.randVar();
