@@ -716,7 +716,9 @@ function splitCells(
       (lines[i] = a.pos != null ? lineOf(a.pos) : i > 0 ? lines[i - 1] : 0)
   );
 
-  const cells: { from: number; to: number }[] = [];
+  // The first line of each cell. A cell runs until the next one starts, so
+  // tokens spanning lines (a multi-line comment or string) stay whole.
+  const starts: number[] = [];
   let first = 0;
   for (let i = 0; i < asc.length; i++) {
     const last = i == asc.length - 1;
@@ -730,10 +732,14 @@ function splitCells(
         if (!blank) continue;
       }
     }
-    cells.push({ from: lineStarts[lines[first]], to: lineEnd(lines[i]) });
+    starts.push(lines[first]);
     first = i + 1;
   }
-  return cells;
+  return starts.map((start, k) => {
+    let end = k + 1 < starts.length ? starts[k + 1] - 1 : lineStarts.length - 1;
+    while (end > start && isBlank(end)) end--;
+    return { from: lineStarts[start], to: lineEnd(end) };
+  });
 }
 
 function compile(txt: string, options: Partial<CompileOptions> = {}): string {

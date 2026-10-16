@@ -64,6 +64,25 @@ describe("splitCells", () => {
     ]);
   });
 
+  it("keeps comments and strings that span lines whole", () => {
+    expect(
+      cells(
+        "注曰。「「多\n行」」。\n夫三。示之。\n\n吾有一言。曰「「上\n下」」。名之曰「甲」。"
+      )
+    ).toEqual([
+      "注曰。「「多\n行」」。",
+      "夫三。示之。",
+      "吾有一言。曰「「上\n下」」。名之曰「甲」。"
+    ]);
+  });
+
+  it("leaves blank lines between cells out of them", () => {
+    expect(cells("夫三。示之。\n\n\n夫四。示之。\n\n")).toEqual([
+      "夫三。示之。",
+      "夫四。示之。"
+    ]);
+  });
+
   it("returns no cells for an empty program", () => {
     expect(splitCells("")).toEqual([]);
     expect(splitCells("\n\n")).toEqual([]);
